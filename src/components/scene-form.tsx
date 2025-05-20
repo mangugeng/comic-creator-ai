@@ -352,6 +352,10 @@ export function SceneForm() {
     name: "scenes"
   });
 
+  // Hydration fix: Only generate IDs on client after mount
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => { setIsMounted(true); }, []);
+
   const [storedCharacters, setStoredCharacters] = useState<Character[]>([]);
   const [backgroundOptions, setBackgroundOptions] = useState<{id: string, name: string}[]>([]);
   const { showToast } = useToast();
@@ -415,9 +419,9 @@ export function SceneForm() {
     );
   }, [form, storedCharacters]);
 
-  // Ensure only one scene exists
+  // Ensure only one scene exists, and only append after mount
   useEffect(() => {
-    if (fields.length === 0) {
+    if (isMounted && fields.length === 0) {
       append({
         id: crypto.randomUUID(),
         characters: [],
@@ -471,7 +475,7 @@ export function SceneForm() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fields.length]);
+  }, [fields.length, isMounted]);
 
   // Memoize character options to prevent unnecessary re-renders
   const characterOptions = useMemo(() => 
@@ -480,56 +484,9 @@ export function SceneForm() {
       label: character.name
     })), [characters]);
 
-  const addScene = useCallback(() => {
-    append({
-      id: crypto.randomUUID(),
-      characters: [],
-      background: "",
-      time: "",
-      atmosphere: "",
-      style: "",
-      styleCustom: "",
-      cameraAngle: "",
-      lighting: "",
-      soundFX: "",
-      soundFXCustom: "",
-      lineFX: "",
-      lineFXCustom: "",
-      texture: "",
-      vfx: "",
-      motionFX: "",
-      soundFXScene: "",
-      soundFXSceneCustom: "",
-      ukuranPanel: "",
-      rasioPanel: "",
-      jenisPanel: "",
-      orientasiPanel: "",
-      latarOrang: "",
-      detailVisual: "",
-      komposisiVisual: "",
-      fokusKamera: "",
-      gerakanTubuh: "",
-      gayaTeksDialog: "",
-      letakDialog: "",
-      warnaDialog: "",
-      efekSuaraCustom: "",
-      detailLatar: "",
-      pencahayaanDetail: "",
-      arahPencahayaan: "",
-      komposisiKarakter: "",
-      efekMotionBlur: "",
-      efekDepth: "",
-      detailVFX: "",
-      detailMotionFX: "",
-      detailSoundFX: "",
-      detailTekstur: "",
-      detailWarna: "",
-      detailGaya: "",
-      renderQuality: "",
-    });
-  }, [append]);
-
+  // Add character to scene only after mount
   const addCharacterToScene = useCallback((sceneIndex: number) => {
+    if (!isMounted) return;
     const scene = form.getValues(`scenes.${sceneIndex}`);
     const updatedCharacters = [...(scene.characters || []), {
       id: crypto.randomUUID(),
@@ -544,7 +501,7 @@ export function SceneForm() {
       interaksiObjek: "",
     }];
     form.setValue(`scenes.${sceneIndex}.characters`, updatedCharacters);
-  }, [form]);
+  }, [form, isMounted]);
 
   const removeCharacterFromScene = useCallback((sceneIndex: number, characterIndex: number) => {
     const scene = form.getValues(`scenes.${sceneIndex}`);
@@ -799,6 +756,7 @@ export function SceneForm() {
                       size="sm"
                       className="w-full mt-2"
                       onClick={() => {
+                        if (!isMounted) return;
                         const current = form.watch(`scenes.${sceneIndex}.characters`) || [];
                         const newChar = {
                           id: crypto.randomUUID(),
