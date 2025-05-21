@@ -139,7 +139,6 @@ export function CharacterList() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium">Karakter</h3>
         <Button onClick={appendNewCharacter} variant="outline">
           <PlusCircle className="mr-2 h-4 w-4" />
           Tambah Karakter
@@ -243,8 +242,7 @@ export function CharacterList() {
       )}
 
       <div className="space-y-4">
-        <h4 className="font-medium">Karakter Tersimpan</h4>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-4">
           {storedCharacters.map((character) => (
             <Card key={character.id} className="p-4">
               <div className="flex justify-between items-center">

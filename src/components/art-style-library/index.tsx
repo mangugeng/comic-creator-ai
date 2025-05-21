@@ -130,143 +130,108 @@ export function ArtStyleLibrary() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium">Library Gaya Seni</h3>
-        <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-          <DialogTrigger asChild>
-            <Button variant="outline" size="sm" onClick={() => { setShowForm(true); setEditId(null); }}>
-              <PlusCircle className="mr-2 h-4 w-4" /> Tambah Gaya Seni
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{editId ? "Edit Gaya Seni" : "Tambah Gaya Seni"}</DialogTitle>
-            </DialogHeader>
-            {showForm && (
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nama Gaya</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Masukkan nama gaya seni" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Deskripsi</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Masukkan deskripsi gaya seni"
-                          className="min-h-[100px]"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="characteristics"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Karakteristik</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Masukkan karakteristik gaya seni (satu per baris)"
-                          className="min-h-[100px]"
-                          value={field.value.join("\n")}
-                          onChange={(e) => field.onChange(e.target.value.split("\n").filter(Boolean))}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="examples"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Contoh</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Masukkan contoh gaya seni (satu per baris)"
-                          className="min-h-[100px]"
-                          value={field.value.join("\n")}
-                          onChange={(e) => field.onChange(e.target.value.split("\n").filter(Boolean))}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="flex gap-2 justify-end">
-                  <Button type="button" variant="outline" onClick={handleCancel}>Batal</Button>
-                  <Button type="submit" disabled={isSaving}>
-                    <Save className="mr-2 h-4 w-4" />
-                    {isSaving ? (editId ? "Menyimpan..." : "Menyimpan...") : (editId ? "Update Gaya Seni" : "Simpan Gaya Seni")}
-                  </Button>
-                </div>
-              </form>
-            )}
-          </DialogContent>
-        </Dialog>
+        <Button variant="outline" size="sm" onClick={() => { setShowForm(true); setEditId(null); }}>
+          <PlusCircle className="mr-2 h-4 w-4" /> Tambah Gaya Seni
+        </Button>
       </div>
-      <Dialog open={infoOpen} onOpenChange={setInfoOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{infoData?.name}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-2">
-            <div className="text-muted-foreground whitespace-pre-line">{infoData?.description}</div>
-            {infoData?.characteristics && infoData.characteristics.length > 0 && (
-              <div>
-                <h5 className="text-sm font-medium mt-2">Karakteristik:</h5>
-                <ul className="text-sm text-muted-foreground list-disc list-inside">
-                  {infoData.characteristics.map((char, idx) => (
-                    <li key={idx}>{char}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            {infoData?.examples && infoData.examples.length > 0 && (
-              <div>
-                <h5 className="text-sm font-medium mt-2">Contoh:</h5>
-                <ul className="text-sm text-muted-foreground list-disc list-inside">
-                  {infoData.examples.map((ex, idx) => (
-                    <li key={idx}>{ex}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
+
+      {showForm && (
+        <Card className="p-6">
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nama Gaya</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Masukkan nama gaya seni" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Deskripsi</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Masukkan deskripsi gaya seni"
+                      className="min-h-[100px]"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="characteristics"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Karakteristik</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Masukkan karakteristik gaya seni (satu per baris)"
+                      className="min-h-[100px]"
+                      value={field.value.join("\n")}
+                      onChange={(e) => field.onChange(e.target.value.split("\n").filter(Boolean))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="examples"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contoh</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Masukkan contoh gaya seni (satu per baris)"
+                      className="min-h-[100px]"
+                      value={field.value.join("\n")}
+                      onChange={(e) => field.onChange(e.target.value.split("\n").filter(Boolean))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleCancel}
+              >
+                Batal
+              </Button>
+              <Button
+                type="button"
+                disabled={isSaving}
+                onClick={form.handleSubmit(onSubmit)}
+              >
+                {isSaving ? "Menyimpan..." : (editId ? "Simpan Perubahan" : "Simpan Gaya Seni")}
+              </Button>
+            </div>
           </div>
-        </DialogContent>
-      </Dialog>
-      <div className="grid grid-cols-2 gap-4">
+        </Card>
+      )}
+
+      <div className="flex flex-col gap-4">
         {artStyles.map((style) => (
           <Card key={style.id} className="p-4">
             <div className="flex justify-between items-center">
               <div>
-                <h4 className="font-medium mb-1">{style.name}</h4>
-                <p className="text-sm text-muted-foreground">{style.description}</p>
+                <span className="font-medium">{style.name}</span>
               </div>
-              <div className="flex gap-1 items-start">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => { setInfoData({ name: style.name, description: style.description, characteristics: style.characteristics, examples: style.examples }); setInfoOpen(true); }}
-                >
-                  <Info className="h-4 w-4" />
-                </Button>
+              <div className="flex gap-2">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -281,11 +246,55 @@ export function ArtStyleLibrary() {
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setInfoData({
+                      name: style.name,
+                      description: style.description,
+                      characteristics: style.characteristics,
+                      examples: style.examples
+                    });
+                    setInfoOpen(true);
+                  }}
+                >
+                  <Info className="h-4 w-4" />
+                </Button>
               </div>
             </div>
           </Card>
         ))}
       </div>
+      <Dialog open={infoOpen} onOpenChange={setInfoOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{infoData?.name}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <h4 className="font-medium mb-2">Deskripsi</h4>
+              <p className="text-sm text-muted-foreground">{infoData?.description}</p>
+            </div>
+            <div>
+              <h4 className="font-medium mb-2">Karakteristik</h4>
+              <ul className="text-sm text-muted-foreground list-disc list-inside">
+                {infoData?.characteristics?.map((char, idx) => (
+                  <li key={idx}>{char}</li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium mb-2">Contoh</h4>
+              <ul className="text-sm text-muted-foreground list-disc list-inside">
+                {infoData?.examples?.map((ex, idx) => (
+                  <li key={idx}>{ex}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -296,7 +305,7 @@ export function ArtStyleList() {
     ArtStyleService.getAllArtStyles().then(setArtStyles);
   }, []);
   return (
-    <div className="grid grid-cols-2 gap-4 mt-4">
+    <div className="space-y-4 mt-4">
       {artStyles.map((style) => (
         <Card key={style.id} className="p-4">
           <div className="space-y-2">

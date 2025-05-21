@@ -516,7 +516,7 @@ export function SceneForm() {
         <div className="space-y-4">
           {fields.slice(0, 1).map((field, sceneIndex) => (
             <Card key={field.id} className="p-6 bg-white/80 shadow-md">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-8">
                 {/* Left Column - Characters */}
                 <div>
                   <div className="mb-4 border-b pb-2">
@@ -532,19 +532,19 @@ export function SceneForm() {
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
-                        <div className="grid grid-cols-1 gap-3">
+                        <div className="grid grid-cols-3 gap-4">
                           <FormField
                             control={form.control}
                             name={`scenes.${sceneIndex}.characters.${charIndex}.characterId`}
                             render={({ field }) => (
-                              <FormItem>
+                              <FormItem className="w-full">
                                 <FormLabel>Karakter</FormLabel>
                                 <Select
                                   onValueChange={field.onChange}
                                   value={field.value ?? ""}
                                 >
                                   <FormControl>
-                                    <SelectTrigger>
+                                    <SelectTrigger className="w-full">
                                       <SelectValue placeholder="Pilih karakter" />
                                     </SelectTrigger>
                                   </FormControl>
@@ -564,14 +564,14 @@ export function SceneForm() {
                             control={form.control}
                             name={`scenes.${sceneIndex}.characters.${charIndex}.expression`}
                             render={({ field }) => (
-                              <FormItem>
+                              <FormItem className="w-full">
                                 <FormLabel>Ekspresi</FormLabel>
                                 <Select
                                   onValueChange={field.onChange}
                                   value={field.value ?? ""}
                                 >
                                   <FormControl>
-                                    <SelectTrigger>
+                                    <SelectTrigger className="w-full">
                                       <SelectValue placeholder="Pilih ekspresi" />
                                     </SelectTrigger>
                                   </FormControl>
@@ -591,14 +591,14 @@ export function SceneForm() {
                             control={form.control}
                             name={`scenes.${sceneIndex}.characters.${charIndex}.action`}
                             render={({ field }) => (
-                              <FormItem>
+                              <FormItem className="w-full">
                                 <FormLabel>Aksi</FormLabel>
                                 <Select
                                   onValueChange={field.onChange}
                                   value={field.value ?? ""}
                                 >
                                   <FormControl>
-                                    <SelectTrigger>
+                                    <SelectTrigger className="w-full">
                                       <SelectValue placeholder="Pilih aksi" />
                                     </SelectTrigger>
                                   </FormControl>
@@ -618,14 +618,14 @@ export function SceneForm() {
                             control={form.control}
                             name={`scenes.${sceneIndex}.characters.${charIndex}.interaction`}
                             render={({ field }) => (
-                              <FormItem>
+                              <FormItem className="w-full">
                                 <FormLabel>Interaksi</FormLabel>
                                 <Select
                                   onValueChange={field.onChange}
                                   value={field.value ?? ""}
                                 >
                                   <FormControl>
-                                    <SelectTrigger>
+                                    <SelectTrigger className="w-full">
                                       <SelectValue placeholder="Pilih interaksi" />
                                     </SelectTrigger>
                                   </FormControl>
@@ -645,14 +645,14 @@ export function SceneForm() {
                             control={form.control}
                             name={`scenes.${sceneIndex}.characters.${charIndex}.interactionTarget`}
                             render={({ field }) => (
-                              <FormItem>
+                              <FormItem className="w-full">
                                 <FormLabel>Target Interaksi</FormLabel>
                                 <Select
                                   onValueChange={field.onChange}
                                   value={field.value ?? ""}
                                 >
                                   <FormControl>
-                                    <SelectTrigger>
+                                    <SelectTrigger className="w-full">
                                       <SelectValue placeholder="Pilih target interaksi" />
                                     </SelectTrigger>
                                   </FormControl>
@@ -672,14 +672,14 @@ export function SceneForm() {
                             control={form.control}
                             name={`scenes.${sceneIndex}.characters.${charIndex}.interactionBodyPart`}
                             render={({ field }) => (
-                              <FormItem>
+                              <FormItem className="w-full">
                                 <FormLabel>Bagian Tubuh</FormLabel>
                                 <Select
                                   onValueChange={field.onChange}
                                   value={field.value ?? ""}
                                 >
                                   <FormControl>
-                                    <SelectTrigger>
+                                    <SelectTrigger className="w-full">
                                       <SelectValue placeholder="Pilih bagian tubuh" />
                                     </SelectTrigger>
                                   </FormControl>
@@ -699,14 +699,14 @@ export function SceneForm() {
                             control={form.control}
                             name={`scenes.${sceneIndex}.characters.${charIndex}.speechBubbleType`}
                             render={({ field }) => (
-                              <FormItem>
+                              <FormItem className="w-full">
                                 <FormLabel>Jenis Balon Text</FormLabel>
                                 <Select
                                   onValueChange={field.onChange}
                                   value={field.value ?? ""}
                                 >
                                   <FormControl>
-                                    <SelectTrigger>
+                                    <SelectTrigger className="w-full">
                                       <SelectValue placeholder="Pilih jenis balon text" />
                                     </SelectTrigger>
                                   </FormControl>
@@ -726,10 +726,10 @@ export function SceneForm() {
                             control={form.control}
                             name={`scenes.${sceneIndex}.characters.${charIndex}.dialog`}
                             render={({ field }) => (
-                              <FormItem>
+                              <FormItem className="w-full">
                                 <FormLabel>Dialog</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="Masukkan dialog" {...field} />
+                                  <Input className="w-full" placeholder="Masukkan dialog" {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -739,10 +739,10 @@ export function SceneForm() {
                             control={form.control}
                             name={`scenes.${sceneIndex}.characters.${charIndex}.interaksiObjek`}
                             render={({ field }) => (
-                              <FormItem>
+                              <FormItem className="w-full">
                                 <FormLabel>Interaksi dengan Objek/Benda Mati</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="Contoh: memegang payung, membawa peti" {...field} />
+                                  <Input className="w-full" placeholder="Contoh: memegang payung, membawa peti" {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -752,43 +752,23 @@ export function SceneForm() {
                       </Card>
                     ))}
                     <Button
+                      type="button"
                       variant="outline"
-                      size="sm"
-                      className="w-full mt-2"
-                      onClick={() => {
-                        if (!isMounted) return;
-                        const current = form.watch(`scenes.${sceneIndex}.characters`) || [];
-                        const newChar = {
-                          id: crypto.randomUUID(),
-                          characterId: "",
-                          expression: "",
-                          action: "",
-                          interaction: "",
-                          interactionTarget: "",
-                          interactionBodyPart: "",
-                          dialog: "",
-                          speechBubbleType: "",
-                          interaksiObjek: "",
-                        };
-                        form.setValue(`scenes.${sceneIndex}.characters`, [...current, newChar]);
-                        form.trigger();
-                      }}
+                      onClick={() => addCharacterToScene(sceneIndex)}
+                      className="w-full"
                     >
-                      <PlusCircle className="mr-2 h-4 w-4" />Tambah Karakter
+                      <PlusCircle className="mr-2 h-4 w-4" />
+                      Tambah Karakter
                     </Button>
                   </div>
                 </div>
 
-                {/* Right Column - Scene Details */}
-                <div>
-                  <div className="mb-4 border-b pb-2">
-                    <h3 className="text-base font-semibold text-primary">Detail Adegan</h3>
-                    <p className="text-xs text-muted-foreground">Atur latar, waktu, atmosfer, gaya artistik, kamera, dan pencahayaan.</p>
-                  </div>
-                  <div className="space-y-6">
-                    {/* Background Section */}
-                    <Card className="p-4 bg-muted/40">
-                      <h4 className="font-medium mb-2">Background & Waktu</h4>
+                {/* Right Column - Scene Settings */}
+                <div className="space-y-4">
+                  {/* Background Section */}
+                  <Card className="p-4 bg-muted/40">
+                    <h4 className="font-medium mb-2">Background & Waktu</h4>
+                    <div className="space-y-4">
                       <div className="flex gap-4 mb-2">
                         <label className="flex items-center gap-1 text-sm">
                           <input
@@ -816,14 +796,14 @@ export function SceneForm() {
                           control={form.control}
                           name="scenes.0.background"
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className="w-full">
                               <FormLabel>Background</FormLabel>
                               <Select
                                 onValueChange={field.onChange}
                                 value={field.value ?? ""}
                               >
                                 <FormControl>
-                                  <SelectTrigger>
+                                  <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Pilih background bawaan" />
                                   </SelectTrigger>
                                 </FormControl>
@@ -844,14 +824,14 @@ export function SceneForm() {
                           control={form.control}
                           name="scenes.0.background"
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className="w-full">
                               <FormLabel>Background (Library)</FormLabel>
                               <Select
                                 onValueChange={field.onChange}
                                 value={field.value ?? ""}
                               >
                                 <FormControl>
-                                  <SelectTrigger>
+                                  <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Pilih background dari library" />
                                   </SelectTrigger>
                                 </FormControl>
@@ -873,14 +853,14 @@ export function SceneForm() {
                         control={form.control}
                         name="scenes.0.latarOrang"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Latar Orang</FormLabel>
                             <Select
                               onValueChange={field.onChange}
                               value={field.value ?? ""}
                             >
                               <FormControl>
-                                <SelectTrigger>
+                                <SelectTrigger className="w-full">
                                   <SelectValue placeholder="Pilih latar orang" />
                                 </SelectTrigger>
                               </FormControl>
@@ -900,14 +880,14 @@ export function SceneForm() {
                         control={form.control}
                         name="scenes.0.time"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Waktu</FormLabel>
                             <Select
                               onValueChange={field.onChange}
                               value={field.value ?? ""}
                             >
                               <FormControl>
-                                <SelectTrigger>
+                                <SelectTrigger className="w-full">
                                   <SelectValue placeholder="Pilih waktu" />
                                 </SelectTrigger>
                               </FormControl>
@@ -927,14 +907,14 @@ export function SceneForm() {
                         control={form.control}
                         name="scenes.0.atmosphere"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Atmosfir</FormLabel>
                             <Select
                               onValueChange={field.onChange}
                               value={field.value ?? ""}
                             >
                               <FormControl>
-                                <SelectTrigger>
+                                <SelectTrigger className="w-full">
                                   <SelectValue placeholder="Pilih atmosfir" />
                                 </SelectTrigger>
                               </FormControl>
@@ -950,18 +930,20 @@ export function SceneForm() {
                           </FormItem>
                         )}
                       />
-                    </Card>
-                    {/* Detail Visual */}
-                    <Card className="p-4 bg-muted/40">
-                      <h4 className="font-medium mb-2">Detail Visual</h4>
+                    </div>
+                  </Card>
+                  {/* Detail Visual */}
+                  <Card className="p-4 bg-muted/40">
+                    <h4 className="font-medium mb-2">Detail Visual</h4>
+                    <div className="grid grid-cols-3 gap-4">
                       <FormField
                         control={form.control}
                         name="scenes.0.detailVisual"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Detail Visual</FormLabel>
                             <FormControl>
-                              <Input placeholder="Contoh: Jalan tanah, rumah-rumah kayu berderet, pagar bambu" {...field} />
+                              <Input className="w-full" placeholder="Contoh: Jalan tanah, rumah-rumah kayu berderet, pagar bambu" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -971,10 +953,10 @@ export function SceneForm() {
                         control={form.control}
                         name="scenes.0.detailLatar"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Detail Latar</FormLabel>
                             <FormControl>
-                              <Input placeholder="Contoh: Ayam lewat, anak-anak bermain di kejauhan" {...field} />
+                              <Input className="w-full" placeholder="Contoh: Ayam lewat, anak-anak bermain di kejauhan" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -984,10 +966,10 @@ export function SceneForm() {
                         control={form.control}
                         name="scenes.0.pencahayaanDetail"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Detail Pencahayaan</FormLabel>
                             <FormControl>
-                              <Input placeholder="Contoh: Sinar matahari lembut dari kanan atas" {...field} />
+                              <Input className="w-full" placeholder="Contoh: Sinar matahari lembut dari kanan atas" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -997,19 +979,21 @@ export function SceneForm() {
                         control={form.control}
                         name="scenes.0.arahPencahayaan"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Arah Pencahayaan</FormLabel>
                             <FormControl>
-                              <Input placeholder="Contoh: Dari kanan atas" {...field} />
+                              <Input className="w-full" placeholder="Contoh: Dari kanan atas" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                    </Card>
-                    {/* Artistic Style Section */}
-                    <Card className="p-4 bg-muted/40">
-                      <h4 className="font-medium mb-2">Gaya Artistik</h4>
+                    </div>
+                  </Card>
+                  {/* Artistic Style Section */}
+                  <Card className="p-4 bg-muted/40">
+                    <h4 className="font-medium mb-2">Gaya Artistik</h4>
+                    <div className="grid grid-cols-3 gap-4">
                       <div className="flex gap-4 mb-2">
                         <label className="flex items-center gap-1 text-sm">
                           <input
@@ -1037,7 +1021,7 @@ export function SceneForm() {
                           control={form.control}
                           name="scenes.0.style"
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className="w-full">
                               <FormLabel>Gaya Artistik</FormLabel>
                               <Select
                                 onValueChange={(value) => {
@@ -1049,7 +1033,7 @@ export function SceneForm() {
                                 value={field.value ?? ""}
                               >
                                 <FormControl>
-                                  <SelectTrigger>
+                                  <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Pilih gaya artistik" />
                                   </SelectTrigger>
                                 </FormControl>
@@ -1071,14 +1055,14 @@ export function SceneForm() {
                           control={form.control}
                           name="scenes.0.style"
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className="w-full">
                               <FormLabel>Gaya Artistik (Library)</FormLabel>
                               <Select
                                 onValueChange={field.onChange}
                                 value={field.value ?? ""}
                               >
                                 <FormControl>
-                                  <SelectTrigger>
+                                  <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Pilih gaya artistik dari library" />
                                   </SelectTrigger>
                                 </FormControl>
@@ -1100,10 +1084,10 @@ export function SceneForm() {
                           control={form.control}
                           name="scenes.0.styleCustom"
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className="w-full">
                               <FormLabel>Custom Style</FormLabel>
                               <FormControl>
-                                <Input placeholder="Masukkan gaya artistik custom" {...field} />
+                                <Input className="w-full" placeholder="Masukkan gaya artistik custom" {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -1115,14 +1099,14 @@ export function SceneForm() {
                         control={form.control}
                         name="scenes.0.texture"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Tekstur</FormLabel>
                             <Select
                               onValueChange={field.onChange}
                               value={field.value ?? ""}
                             >
                               <FormControl>
-                                <SelectTrigger>
+                                <SelectTrigger className="w-full">
                                   <SelectValue placeholder="Pilih tekstur" />
                                 </SelectTrigger>
                               </FormControl>
@@ -1143,14 +1127,14 @@ export function SceneForm() {
                         control={form.control}
                         name="scenes.0.vfx"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>VFX (Visual FX)</FormLabel>
                             <Select
                               onValueChange={field.onChange}
                               value={field.value ?? ""}
                             >
                               <FormControl>
-                                <SelectTrigger>
+                                <SelectTrigger className="w-full">
                                   <SelectValue placeholder="Pilih VFX" />
                                 </SelectTrigger>
                               </FormControl>
@@ -1171,14 +1155,14 @@ export function SceneForm() {
                         control={form.control}
                         name="scenes.0.motionFX"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Motion FX</FormLabel>
                             <Select
                               onValueChange={field.onChange}
                               value={field.value ?? ""}
                             >
                               <FormControl>
-                                <SelectTrigger>
+                                <SelectTrigger className="w-full">
                                   <SelectValue placeholder="Pilih Motion FX" />
                                 </SelectTrigger>
                               </FormControl>
@@ -1199,7 +1183,7 @@ export function SceneForm() {
                         control={form.control}
                         name="scenes.0.soundFXScene"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Sound FX</FormLabel>
                             <Select
                               onValueChange={(value) => {
@@ -1211,7 +1195,7 @@ export function SceneForm() {
                               value={field.value ?? ""}
                             >
                               <FormControl>
-                                <SelectTrigger>
+                                <SelectTrigger className="w-full">
                                   <SelectValue placeholder="Pilih Sound FX" />
                                 </SelectTrigger>
                               </FormControl>
@@ -1232,28 +1216,30 @@ export function SceneForm() {
                           control={form.control}
                           name="scenes.0.soundFXSceneCustom"
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className="w-full">
                               <FormLabel>Custom Sound FX</FormLabel>
                               <FormControl>
-                                <Input placeholder="Masukkan sound effect custom" {...field} />
+                                <Input className="w-full" placeholder="Masukkan sound effect custom" {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
                         />
                       )}
-                    </Card>
-                    {/* Detail Efek */}
-                    <Card className="p-4 bg-muted/40">
-                      <h4 className="font-medium mb-2">Detail Efek</h4>
+                    </div>
+                  </Card>
+                  {/* Detail Efek */}
+                  <Card className="p-4 bg-muted/40">
+                    <h4 className="font-medium mb-2">Detail Efek</h4>
+                    <div className="grid grid-cols-3 gap-4">
                       <FormField
                         control={form.control}
                         name="scenes.0.detailVFX"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Detail VFX</FormLabel>
                             <FormControl>
-                              <Input placeholder="Contoh: Debu kecil mengepul di bawah kaki" {...field} />
+                              <Input className="w-full" placeholder="Contoh: Debu kecil mengepul di bawah kaki" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -1263,10 +1249,10 @@ export function SceneForm() {
                         control={form.control}
                         name="scenes.0.detailMotionFX"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Detail Motion FX</FormLabel>
                             <FormControl>
-                              <Input placeholder="Contoh: Speed lines sejajar arah gerak" {...field} />
+                              <Input className="w-full" placeholder="Contoh: Speed lines sejajar arah gerak" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -1276,10 +1262,10 @@ export function SceneForm() {
                         control={form.control}
                         name="scenes.0.detailSoundFX"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Detail Sound FX</FormLabel>
                             <FormControl>
-                              <Input placeholder="Contoh: WHOOOOSSSS besar dan menyapu" {...field} />
+                              <Input className="w-full" placeholder="Contoh: WHOOOOSSSS besar dan menyapu" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -1289,31 +1275,33 @@ export function SceneForm() {
                         control={form.control}
                         name="scenes.0.efekSuaraCustom"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Efek Suara Custom</FormLabel>
                             <FormControl>
-                              <Input placeholder="Contoh: Efek suara kustom" {...field} />
+                              <Input className="w-full" placeholder="Contoh: Efek suara kustom" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                    </Card>
-                    {/* Camera and Lighting Section */}
-                    <Card className="p-4 bg-muted/40">
-                      <h4 className="font-medium mb-2">Kamera & Pencahayaan</h4>
+                    </div>
+                  </Card>
+                  {/* Camera and Lighting Section */}
+                  <Card className="p-4 bg-muted/40">
+                    <h4 className="font-medium mb-2">Kamera & Pencahayaan</h4>
+                    <div className="grid grid-cols-3 gap-4">
                       <FormField
                         control={form.control}
                         name="scenes.0.cameraAngle"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Sudut Kamera</FormLabel>
                             <Select
                               onValueChange={field.onChange}
                               value={field.value ?? ""}
                             >
                               <FormControl>
-                                <SelectTrigger>
+                                <SelectTrigger className="w-full">
                                   <SelectValue placeholder="Pilih sudut kamera" />
                                 </SelectTrigger>
                               </FormControl>
@@ -1333,14 +1321,14 @@ export function SceneForm() {
                         control={form.control}
                         name="scenes.0.lighting"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Pencahayaan</FormLabel>
                             <Select
                               onValueChange={field.onChange}
                               value={field.value ?? ""}
                             >
                               <FormControl>
-                                <SelectTrigger>
+                                <SelectTrigger className="w-full">
                                   <SelectValue placeholder="Pilih pencahayaan" />
                                 </SelectTrigger>
                               </FormControl>
@@ -1357,19 +1345,19 @@ export function SceneForm() {
                         )}
                       />
                       {/* Panel Layout */}
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
+                      <div className="space-y-4">
                         <FormField
                           control={form.control}
                           name="scenes.0.ukuranPanel"
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className="w-full">
                               <FormLabel>Ukuran Panel</FormLabel>
                               <Select
                                 onValueChange={field.onChange}
                                 value={field.value ?? ""}
                               >
                                 <FormControl>
-                                  <SelectTrigger>
+                                  <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Pilih ukuran panel" />
                                   </SelectTrigger>
                                 </FormControl>
@@ -1389,14 +1377,14 @@ export function SceneForm() {
                           control={form.control}
                           name="scenes.0.rasioPanel"
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className="w-full">
                               <FormLabel>Rasio Panel</FormLabel>
                               <Select
                                 onValueChange={field.onChange}
                                 value={field.value ?? ""}
                               >
                                 <FormControl>
-                                  <SelectTrigger>
+                                  <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Pilih rasio panel" />
                                   </SelectTrigger>
                                 </FormControl>
@@ -1416,14 +1404,14 @@ export function SceneForm() {
                           control={form.control}
                           name="scenes.0.jenisPanel"
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className="w-full">
                               <FormLabel>Jenis Panel</FormLabel>
                               <Select
                                 onValueChange={field.onChange}
                                 value={field.value ?? ""}
                               >
                                 <FormControl>
-                                  <SelectTrigger>
+                                  <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Pilih jenis panel" />
                                   </SelectTrigger>
                                 </FormControl>
@@ -1443,14 +1431,14 @@ export function SceneForm() {
                           control={form.control}
                           name="scenes.0.orientasiPanel"
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className="w-full">
                               <FormLabel>Orientasi Panel</FormLabel>
                               <Select
                                 onValueChange={field.onChange}
                                 value={field.value ?? ""}
                               >
                                 <FormControl>
-                                  <SelectTrigger>
+                                  <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Pilih orientasi panel" />
                                   </SelectTrigger>
                                 </FormControl>
@@ -1467,18 +1455,20 @@ export function SceneForm() {
                           )}
                         />
                       </div>
-                    </Card>
-                    {/* Komposisi & Kamera */}
-                    <Card className="p-4 bg-muted/40">
-                      <h4 className="font-medium mb-2">Komposisi & Kamera</h4>
+                    </div>
+                  </Card>
+                  {/* Komposisi & Kamera */}
+                  <Card className="p-4 bg-muted/40">
+                    <h4 className="font-medium mb-2">Komposisi & Kamera</h4>
+                    <div className="grid grid-cols-3 gap-4">
                       <FormField
                         control={form.control}
                         name="scenes.0.komposisiVisual"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Komposisi Visual</FormLabel>
                             <FormControl>
-                              <Input placeholder="Contoh: Karakter di sepertiga kiri bawah panel" {...field} />
+                              <Input className="w-full" placeholder="Contoh: Karakter di sepertiga kiri bawah panel" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -1488,10 +1478,10 @@ export function SceneForm() {
                         control={form.control}
                         name="scenes.0.komposisiKarakter"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Komposisi Karakter</FormLabel>
                             <FormControl>
-                              <Input placeholder="Contoh: Posisi karakter dalam panel" {...field} />
+                              <Input className="w-full" placeholder="Contoh: Posisi karakter dalam panel" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -1501,10 +1491,10 @@ export function SceneForm() {
                         control={form.control}
                         name="scenes.0.fokusKamera"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Fokus Kamera</FormLabel>
                             <FormControl>
-                              <Input placeholder="Contoh: Shallow focus — karakter tajam, latar belakang blur" {...field} />
+                              <Input className="w-full" placeholder="Contoh: Shallow focus — karakter tajam, latar belakang blur" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -1514,10 +1504,10 @@ export function SceneForm() {
                         control={form.control}
                         name="scenes.0.efekMotionBlur"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Efek Motion Blur</FormLabel>
                             <FormControl>
-                              <Input placeholder="Contoh: Motion blur mengarah ke kanan" {...field} />
+                              <Input className="w-full" placeholder="Contoh: Motion blur mengarah ke kanan" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -1527,27 +1517,29 @@ export function SceneForm() {
                         control={form.control}
                         name="scenes.0.efekDepth"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Efek Depth</FormLabel>
                             <FormControl>
-                              <Input placeholder="Contoh: Latar belakang sedikit blur untuk efek depth" {...field} />
+                              <Input className="w-full" placeholder="Contoh: Latar belakang sedikit blur untuk efek depth" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                    </Card>
-                    {/* Gaya Dialog */}
-                    <Card className="p-4 bg-muted/40">
-                      <h4 className="font-medium mb-2">Gaya Dialog</h4>
+                    </div>
+                  </Card>
+                  {/* Gaya Dialog */}
+                  <Card className="p-4 bg-muted/40">
+                    <h4 className="font-medium mb-2">Gaya Dialog</h4>
+                    <div className="grid grid-cols-3 gap-4">
                       <FormField
                         control={form.control}
                         name="scenes.0.gayaTeksDialog"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Gaya Teks Dialog</FormLabel>
                             <FormControl>
-                              <Input placeholder="Contoh: Huruf kapital, bergelombang, tebal" {...field} />
+                              <Input className="w-full" placeholder="Contoh: Huruf kapital, bergelombang, tebal" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -1557,10 +1549,10 @@ export function SceneForm() {
                         control={form.control}
                         name="scenes.0.letakDialog"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Letak Dialog</FormLabel>
                             <FormControl>
-                              <Input placeholder="Contoh: Di atas karakter, sedikit miring" {...field} />
+                              <Input className="w-full" placeholder="Contoh: Di atas karakter, sedikit miring" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -1570,27 +1562,29 @@ export function SceneForm() {
                         control={form.control}
                         name="scenes.0.warnaDialog"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Warna Dialog</FormLabel>
                             <FormControl>
-                              <Input placeholder="Contoh: Warna kontras dengan latar" {...field} />
+                              <Input className="w-full" placeholder="Contoh: Warna kontras dengan latar" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                    </Card>
-                    {/* Detail Gaya Visual */}
-                    <Card className="p-4 bg-muted/40">
-                      <h4 className="font-medium mb-2">Detail Gaya Visual</h4>
+                    </div>
+                  </Card>
+                  {/* Detail Gaya Visual */}
+                  <Card className="p-4 bg-muted/40">
+                    <h4 className="font-medium mb-2">Detail Gaya Visual</h4>
+                    <div className="grid grid-cols-3 gap-4">
                       <FormField
                         control={form.control}
                         name="scenes.0.detailGaya"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Detail Gaya</FormLabel>
                             <FormControl>
-                              <Input placeholder="Contoh: Detail tambahan gaya artistik" {...field} />
+                              <Input className="w-full" placeholder="Contoh: Detail tambahan gaya artistik" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -1600,10 +1594,10 @@ export function SceneForm() {
                         control={form.control}
                         name="scenes.0.detailTekstur"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Detail Tekstur</FormLabel>
                             <FormControl>
-                              <Input placeholder="Contoh: Goresan kuas tampak jelas" {...field} />
+                              <Input className="w-full" placeholder="Contoh: Goresan kuas tampak jelas" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -1613,31 +1607,33 @@ export function SceneForm() {
                         control={form.control}
                         name="scenes.0.detailWarna"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Detail Warna</FormLabel>
                             <FormControl>
-                              <Input placeholder="Contoh: Gradasi warna hangat" {...field} />
+                              <Input className="w-full" placeholder="Contoh: Gradasi warna hangat" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                    </Card>
-                    {/* Tingkat Render */}
-                    <Card className="p-4 bg-muted/40">
-                      <h4 className="font-medium mb-2">Tingkat Render</h4>
+                    </div>
+                  </Card>
+                  {/* Tingkat Render */}
+                  <Card className="p-4 bg-muted/40">
+                    <h4 className="font-medium mb-2">Tingkat Render</h4>
+                    <div className="grid grid-cols-3 gap-4">
                       <FormField
                         control={form.control}
                         name="scenes.0.renderQuality"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <FormLabel>Tingkat Detail Render</FormLabel>
                             <Select
                               onValueChange={field.onChange}
                               value={field.value ?? ""}
                             >
                               <FormControl>
-                                <SelectTrigger>
+                                <SelectTrigger className="w-full">
                                   <SelectValue placeholder="Pilih tingkat render" />
                                 </SelectTrigger>
                               </FormControl>
@@ -1653,8 +1649,8 @@ export function SceneForm() {
                           </FormItem>
                         )}
                       />
-                    </Card>
-                  </div>
+                    </div>
+                  </Card>
                 </div>
               </div>
             </Card>

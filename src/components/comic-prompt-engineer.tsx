@@ -352,49 +352,59 @@ export function ComicPromptEngineer() {
   return (
     <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-[3fr_2fr] gap-6">
-          <div className="space-y-6">
-            <Tabs defaultValue="characters" className="w-full">
-              <TabsList className="grid grid-cols-4 w-full">
-                <TabsTrigger value="characters">Karakter</TabsTrigger>
-                <TabsTrigger value="backgrounds">Background</TabsTrigger>
-                <TabsTrigger value="art-styles">Gaya Seni</TabsTrigger>
-                <TabsTrigger value="scenes">Adegan</TabsTrigger>
-              </TabsList>
-              <TabsContent value="characters">
+        <div className="flex gap-8 items-start">
+          {/* Sidebar kiri */}
+          <div className="w-[350px] space-y-4">
+            <section className="bg-white border rounded-lg shadow-sm">
+              <h2 className="text-xl font-bold bg-gray-200 px-4 py-2 rounded-t-lg">Karakter</h2>
+              <div className="p-4">
                 <CharacterList />
-              </TabsContent>
-              <TabsContent value="backgrounds">
+              </div>
+            </section>
+            <section className="bg-white border rounded-lg shadow-sm">
+              <h2 className="text-xl font-bold bg-gray-200 px-4 py-2 rounded-t-lg">Background</h2>
+              <div className="p-4">
                 <BackgroundLibrary />
-              </TabsContent>
-              <TabsContent value="art-styles">
+              </div>
+            </section>
+            <section className="bg-white border rounded-lg shadow-sm">
+              <h2 className="text-xl font-bold bg-gray-200 px-4 py-2 rounded-t-lg">Gaya Seni</h2>
+              <div className="p-4">
                 <ArtStyleLibrary />
-              </TabsContent>
-              <TabsContent value="scenes">
-                <SceneForm />
-              </TabsContent>
-            </Tabs>
+              </div>
+            </section>
           </div>
-          <div className="space-y-6">
-            <div className="flex justify-end gap-2">
-              <Button type="submit" disabled={isGenerating}>
-                {isGenerating ? "Membuat Prompt..." : "Buat Prompt"}
-              </Button>
-              <Button type="button" variant="outline" onClick={handleCopyPrompt} disabled={!generatedPrompt}>
-                <Copy className="mr-2 h-4 w-4" />Copy Prompt
-              </Button>
-              <Button type="button" variant="outline" onClick={handleSavePrompt} disabled={!generatedPrompt}>
-                <Save className="mr-2 h-4 w-4" />Save Prompt
-              </Button>
-            </div>
-            <div className="border rounded-lg p-4 min-h-[200px]">
-              <h3 className="text-lg font-medium mb-4">Hasil Prompt</h3>
-              {generatedPrompt ? (
-                <pre className="whitespace-pre-wrap bg-muted p-4 rounded-lg">{generatedPrompt}</pre>
-              ) : (
-                <span className="text-muted-foreground">Prompt akan muncul di sini setelah Anda klik tombol Buat Prompt.</span>
-              )}
-            </div>
+          {/* Main section kanan */}
+          <div className="flex-1 space-y-4">
+            <section className="bg-white border rounded-lg shadow-sm">
+              <h2 className="text-xl font-bold bg-gray-200 px-4 py-2 rounded-t-lg">Adegan</h2>
+              <div className="p-4">
+                <SceneForm />
+              </div>
+            </section>
+            <section className="bg-white border rounded-lg shadow-sm">
+              <div className="p-4">
+                <div className="flex justify-end gap-2 mb-4">
+                  <Button type="submit" disabled={isGenerating}>
+                    {isGenerating ? "Membuat Prompt..." : "Buat Prompt"}
+                  </Button>
+                  <Button type="button" variant="outline" onClick={handleCopyPrompt} disabled={!generatedPrompt}>
+                    <Copy className="mr-2 h-4 w-4" />Copy Prompt
+                  </Button>
+                  <Button type="button" variant="outline" onClick={handleSavePrompt} disabled={!generatedPrompt}>
+                    <Save className="mr-2 h-4 w-4" />Save Prompt
+                  </Button>
+                </div>
+                <div className="border rounded-lg p-4 min-h-[200px]">
+                  <h3 className="text-lg font-medium mb-4">Hasil Prompt</h3>
+                  {generatedPrompt ? (
+                    <pre className="whitespace-pre-wrap bg-muted p-4 rounded-lg">{generatedPrompt}</pre>
+                  ) : (
+                    <span className="text-muted-foreground">Prompt akan muncul di sini setelah Anda klik tombol Buat Prompt.</span>
+                  )}
+                </div>
+              </div>
+            </section>
           </div>
         </div>
       </form>

@@ -155,7 +155,6 @@ export function BackgroundLibrary() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium">Background</h3>
         <Button onClick={onAddClick} variant="outline">
           <PlusCircle className="mr-2 h-4 w-4" />
           Tambah Background
@@ -218,7 +217,7 @@ export function BackgroundLibrary() {
         </Card>
       )}
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="flex flex-col gap-4">
         {backgrounds.map((background) => (
           <Card key={background.id} className="p-4">
             <div className="flex justify-between items-center">
