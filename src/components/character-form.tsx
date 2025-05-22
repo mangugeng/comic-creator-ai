@@ -1,17 +1,14 @@
 "use client";
 
 import { useFieldArray, useFormContext } from "react-hook-form";
-import { X, PlusCircle, Save, Trash2 } from "lucide-react";
+import { PlusCircle, Trash2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Character } from "@/types/character";
-import { CharacterService } from "@/services/character-service";
+import type { Character } from "@/types/service";
 import { CharacterSelector } from "@/components/character-selector";
-import { toast } from "sonner";
-import { useCallback } from "react";
 
 interface CharacterField {
   id: string;
@@ -38,9 +35,8 @@ export function CharacterForm() {
       append({
         id: crypto.randomUUID(),
         name: character.name,
-        physical: character.physical,
+        physical: character.physical || "",
         clothing: character.clothing,
-        isBackground: character.isBackground
       });
     } else {
       // Hapus karakter yang tidak dipilih
@@ -51,7 +47,7 @@ export function CharacterForm() {
     }
   };
 
-  const addCharacter = useCallback(() => {
+  const addCharacter = () => {
     append({
       id: crypto.randomUUID(),
       name: "",
@@ -59,65 +55,6 @@ export function CharacterForm() {
       clothing: "",
       isBackground: false
     });
-  }, [append]);
-
-  // Save character to library
-  const saveCharacter = async (index: number) => {
-    try {
-      const character = form.getValues(`characters.${index}`);
-      if (!character.name || !character.physical) {
-        toast.error("Nama dan deskripsi fisik harus diisi");
-        return;
-      }
-
-      await CharacterService.saveCharacter({
-        name: character.name,
-        physical: character.physical,
-        clothing: character.clothing || "",
-        isBackground: character.isBackground || false,
-      });
-
-      toast.success("Karakter berhasil disimpan ke library");
-    } catch (error) {
-      console.error("Error saving character:", error);
-      toast.error("Gagal menyimpan karakter");
-    }
-  };
-
-  // Update character in library
-  const updateCharacter = async (index: number) => {
-    try {
-      const character = form.getValues(`characters.${index}`);
-      if (!character.name || !character.physical) {
-        toast.error("Nama dan deskripsi fisik harus diisi");
-        return;
-      }
-
-      await CharacterService.updateCharacter(character.id, {
-        name: character.name,
-        physical: character.physical,
-        clothing: character.clothing || "",
-        isBackground: character.isBackground || false,
-      });
-
-      toast.success("Karakter berhasil diperbarui");
-    } catch (error) {
-      console.error("Error updating character:", error);
-      toast.error("Gagal memperbarui karakter");
-    }
-  };
-
-  // Delete character from library
-  const deleteCharacter = async (index: number) => {
-    try {
-      const character = form.getValues(`characters.${index}`);
-      await CharacterService.deleteCharacter(character.id);
-      remove(index);
-      toast.success("Karakter berhasil dihapus dari library");
-    } catch (error) {
-      console.error("Error deleting character:", error);
-      toast.error("Gagal menghapus karakter");
-    }
   };
 
   return (

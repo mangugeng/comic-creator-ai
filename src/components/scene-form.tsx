@@ -1,19 +1,20 @@
 "use client";
 
 import { useFieldArray, useFormContext } from "react-hook-form";
-import { PlusCircle, Info, Trash2, Wand2 } from "lucide-react";
+import { PlusCircle, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useMemo, useCallback, useState, useEffect } from "react";
 import { CharacterService } from "@/services/character-service";
 import { useToast } from "@/components/ui/toast";
-import { Loader2 } from "lucide-react";
 import { BackgroundService } from "@/services/background-service";
-import { Input } from "@/components/ui/input";
 import { ArtStyleService } from "@/services/art-style-service";
+import { PropertyService } from "@/services/property-service";
+import type { Background as BackgroundType, ArtStyle as ArtStyleType, Property as PropertyType, Character } from "@/types/service";
+import { Input } from "@/components/ui/input";
+import { MultiSelect } from "@/components/ui/multi-select";
 
 // Dropdown options
 const expressionOptions = [
@@ -107,19 +108,6 @@ export const styleOptions = [
   { value: "painterly", label: "Lukisan" },
 ];
 
-const effectOptions = [
-  { value: "none", label: "Tidak Ada" },
-  { value: "blur", label: "Blur" },
-  { value: "glow", label: "Glow" },
-  { value: "smoke", label: "Asap" },
-  { value: "fire", label: "Api" },
-  { value: "water", label: "Air" },
-  { value: "wind", label: "Angin" },
-  { value: "rain", label: "Hujan" },
-  { value: "snow", label: "Salju" },
-  { value: "particles", label: "Partikel" },
-];
-
 export const timeOptions = [
   { value: "morning", label: "Pagi" },
   { value: "noon", label: "Siang" },
@@ -141,27 +129,6 @@ export const atmosphereOptions = [
   { value: "mysterious", label: "Misterius" },
   { value: "peaceful", label: "Tenang" },
   { value: "tense", label: "Mencekam" },
-];
-
-const soundFXOptions = [
-  { value: "none", label: "Tidak Ada" },
-  { value: "whoosh", label: "Whoosh" },
-  { value: "bang", label: "Bang" },
-  { value: "boom", label: "Boom" },
-  { value: "crash", label: "Crash" },
-  { value: "splash", label: "Splash" },
-  { value: "thud", label: "Thud" },
-  { value: "custom", label: "Custom" },
-];
-
-const lineFXOptions = [
-  { value: "none", label: "Tidak Ada" },
-  { value: "speed_lines", label: "Speed Lines" },
-  { value: "impact_lines", label: "Impact Lines" },
-  { value: "motion_lines", label: "Motion Lines" },
-  { value: "focus_lines", label: "Focus Lines" },
-  { value: "energy_lines", label: "Energy Lines" },
-  { value: "custom", label: "Custom" },
 ];
 
 const speechBubbleOptions = [
@@ -283,6 +250,8 @@ interface SceneCharacter {
   dialog: string;
   speechBubbleType: string;
   interaksiObjek?: string;
+  interaksiProperties?: string[];
+  interaksiObjekManual?: string;
 }
 
 interface SceneField {
@@ -330,19 +299,22 @@ interface SceneField {
   detailWarna?: string;
   detailGaya?: string;
   renderQuality?: string;
-}
-
-interface Character {
-  id: string;
-  name: string;
-  physical: string;
-  clothing?: string;
-  isBackground: boolean;
+  backgroundProperties?: string[];
 }
 
 interface FormValues {
   characters: Character[];
   scenes: SceneField[];
+}
+
+declare module "./scene-form" {
+  interface SceneCharacter {
+    interaksiProperties?: string[];
+    interaksiObjekManual?: string;
+  }
+  interface SceneField {
+    backgroundProperties?: string[];
+  }
 }
 
 export function SceneForm() {
@@ -356,24 +328,25 @@ export function SceneForm() {
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => { setIsMounted(true); }, []);
 
-  const [storedCharacters, setStoredCharacters] = useState<Character[]>([]);
-  const [backgroundOptions, setBackgroundOptions] = useState<{id: string, name: string}[]>([]);
   const { showToast } = useToast();
-  const [artStyleSource, setArtStyleSource] = useState<'default' | 'storage'>('default');
-  const [artStyleStorageOptions, setArtStyleStorageOptions] = useState<{id: string, name: string}[]>([]);
+  const [storedCharacters, setStoredCharacters] = useState<Character[]>([]);
+  const [storedBackgrounds, setStoredBackgrounds] = useState<BackgroundType[]>([]);
+  const [storedArtStyles, setStoredArtStyles] = useState<ArtStyleType[]>([]);
+  const [storedProperties, setStoredProperties] = useState<PropertyType[]>([]);
   const [backgroundSource, setBackgroundSource] = useState<'default' | 'library'>('default');
+  const [artStyleSource, setArtStyleSource] = useState<'default' | 'storage'>('default');
 
   useEffect(() => {
     // Load characters from storage on component mount
     const loadCharacters = async () => {
       try {
         const chars = await CharacterService.getAllCharacters();
-        setStoredCharacters(chars);
-      } catch (error) {
+        setStoredCharacters(chars as unknown as Character[]);
+      } catch {
         showToast({
           title: "Error",
           description: "Gagal memuat daftar karakter",
-          variant: "destructive",
+          variant: "destructive"
         });
       }
     };
@@ -382,12 +355,12 @@ export function SceneForm() {
     const loadBackgrounds = async () => {
       try {
         const bgs = await BackgroundService.getAllBackgrounds();
-        setBackgroundOptions(bgs.map(bg => ({ id: bg.id, name: bg.name })));
-      } catch (error) {
+        setStoredBackgrounds(bgs as unknown as BackgroundType[]);
+      } catch {
         showToast({
           title: "Error",
           description: "Gagal memuat daftar background",
-          variant: "destructive",
+          variant: "destructive"
         });
       }
     };
@@ -396,16 +369,30 @@ export function SceneForm() {
     const loadArtStyles = async () => {
       try {
         const styles = await ArtStyleService.getAllArtStyles();
-        setArtStyleStorageOptions(styles.map(s => ({ id: s.id, name: s.name })));
-      } catch (error) {
+        setStoredArtStyles(styles as unknown as ArtStyleType[]);
+      } catch {
         showToast({
           title: "Error",
           description: "Gagal memuat daftar gaya artistik",
-          variant: "destructive",
+          variant: "destructive"
         });
       }
     };
     loadArtStyles();
+    // Load properties from storage (pakai service)
+    const loadProperties = async () => {
+      try {
+        const props = await PropertyService.getProperties();
+        setStoredProperties(props as unknown as PropertyType[]);
+      } catch {
+        showToast({
+          title: "Error",
+          description: "Gagal memuat daftar property",
+          variant: "destructive"
+        });
+      }
+    };
+    loadProperties();
   }, [showToast]);
 
   // Use useMemo to prevent unnecessary re-renders
@@ -467,6 +454,7 @@ export function SceneForm() {
         detailWarna: "",
         detailGaya: "",
         renderQuality: "",
+        backgroundProperties: [],
       });
     } else if (fields.length > 1) {
       // Remove extra scenes if any
@@ -474,8 +462,7 @@ export function SceneForm() {
         remove(i);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fields.length, isMounted]);
+  }, [fields.length, isMounted, append, remove]);
 
   // Memoize character options to prevent unnecessary re-renders
   const characterOptions = useMemo(() => 
@@ -499,18 +486,21 @@ export function SceneForm() {
       dialog: "",
       speechBubbleType: "",
       interaksiObjek: "",
+      interaksiProperties: [],
+      interaksiObjekManual: "",
     }];
     form.setValue(`scenes.${sceneIndex}.characters`, updatedCharacters);
   }, [form, isMounted]);
 
   const removeCharacterFromScene = useCallback((sceneIndex: number, characterIndex: number) => {
     const scene = form.getValues(`scenes.${sceneIndex}`);
-    const updatedCharacters = scene.characters.filter((_: any, index: number) => index !== characterIndex);
+    const updatedCharacters = scene.characters.filter((_: SceneCharacter, index: number) => index !== characterIndex);
     form.setValue(`scenes.${sceneIndex}.characters`, updatedCharacters);
   }, [form]);
 
   return (
     <div className="space-y-6">
+      <pre className="text-xs bg-yellow-50 p-2 border border-yellow-200 rounded mb-2">{JSON.stringify(storedProperties, null, 2)}</pre>
       {/* Scene Details */}
       <div>
         <div className="space-y-4">
@@ -748,6 +738,35 @@ export function SceneForm() {
                               </FormItem>
                             )}
                           />
+                          <FormField
+                            control={form.control}
+                            name={`scenes.${sceneIndex}.characters.${charIndex}.interaksiProperties`}
+                            render={({ field }) => (
+                              <FormItem className="w-full">
+                                <FormLabel>Interaksi dengan Property (multi)</FormLabel>
+                                <MultiSelect
+                                  options={storedProperties.map(opt => ({ value: opt.id, label: opt.name }))}
+                                  value={field.value || []}
+                                  onChange={field.onChange}
+                                  placeholder="Pilih property dari library"
+                                />
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name={`scenes.${sceneIndex}.characters.${charIndex}.interaksiObjekManual`}
+                            render={({ field }) => (
+                              <FormItem className="w-full">
+                                <FormLabel>Interaksi dengan Objek (manual)</FormLabel>
+                                <FormControl>
+                                  <Input className="w-full" placeholder="Tulis manual jika tidak ada di library" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
                         </div>
                       </Card>
                     ))}
@@ -836,7 +855,7 @@ export function SceneForm() {
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  {backgroundOptions.map((option) => (
+                                  {storedBackgrounds.map((option) => (
                                     <SelectItem key={option.id} value={option.id}>
                                       {option.name}
                                     </SelectItem>
@@ -1067,7 +1086,7 @@ export function SceneForm() {
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  {artStyleStorageOptions.map((option) => (
+                                  {storedArtStyles.map((option) => (
                                     <SelectItem key={option.id} value={option.id}>
                                       {option.name}
                                     </SelectItem>
@@ -1650,6 +1669,26 @@ export function SceneForm() {
                         )}
                       />
                     </div>
+                  </Card>
+                  {/* Background Properties */}
+                  <Card className="p-4 bg-muted/40">
+                    <h4 className="font-medium mb-2">Property di Background</h4>
+                    <FormField
+                      control={form.control}
+                      name={`scenes.${sceneIndex}.backgroundProperties`}
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <FormLabel>Property di Background (multi)</FormLabel>
+                          <MultiSelect
+                            options={storedProperties.map(opt => ({ value: opt.id, label: opt.name }))}
+                            value={field.value || []}
+                            onChange={field.onChange}
+                            placeholder="Pilih property dari library"
+                          />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </Card>
                 </div>
               </div>

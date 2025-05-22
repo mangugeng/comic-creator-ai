@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import { PlusCircle, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,31 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/toast";
 import { CharacterService } from "@/services/character-service";
+import type { Character } from "@/types/service";
+
+interface SceneCharacter {
+  id: string;
+  characterId: string;
+  expression: string;
+  action: string;
+  interaction: string;
+  interactionTarget: string;
+  interactionBodyPart: string;
+  dialog: string;
+  speechBubbleType: string;
+}
+
+interface SceneField {
+  id: string;
+  characters: SceneCharacter[];
+  cameraAngle: string;
+  description: string;
+}
+
+interface FormValues {
+  characters: Character[];
+  scenes: SceneField[];
+}
 
 const cameraAngles = [
   { value: "close-up", label: "Close Up" },
@@ -24,110 +49,60 @@ const cameraAngles = [
 ];
 
 export function SceneForm() {
-  const [storedCharacters, setStoredCharacters] = useState<any[]>([]);
-  const { showToast } = useToast();
-  const form = useFormContext();
-  const { fields, append, remove } = useFieldArray({
+  const [storedCharacters, setStoredCharacters] = useState<Character[]>([]);
+  const form = useFormContext<FormValues>();
+  const { fields } = useFieldArray({
     control: form.control,
     name: "scenes"
   });
-  const sceneCharacterArrays = fields.map((field, index) =>
-    useFieldArray({
-      control: form.control,
-      name: `scenes.${index}.characters`
-    })
-  );
+  const { showToast } = useToast();
 
-  useEffect(() => {
-    loadStoredCharacters();
-  }, []);
-
-  const loadStoredCharacters = async () => {
+  const loadStoredCharacters = useCallback(async () => {
     try {
-      const characters = await CharacterService.getAllCharacters();
-      setStoredCharacters(characters);
-    } catch (error) {
-      console.error("Error loading characters:", error);
+      const chars = await CharacterService.getAllCharacters();
+      setStoredCharacters(chars);
+    } catch {
       showToast({
         title: "Error",
-        description: "Gagal memuat karakter",
+        description: "Gagal memuat daftar karakter",
         variant: "destructive",
       });
     }
-  };
+  }, [showToast]);
 
-  const appendNewScene = () => {
-    append({
-      id: crypto.randomUUID(),
-      title: "",
-      description: "",
-      characters: [],
-      cameraAngle: ""
-    });
-  };
+  useEffect(() => {
+    loadStoredCharacters();
+  }, [loadStoredCharacters]);
 
-  const appendCharacterToScene = (sceneIndex: number) => {
-    sceneCharacterArrays[sceneIndex].append({
-      id: crypto.randomUUID(),
-      name: "",
-      role: ""
-    });
-  };
+  // Memoize character options to prevent unnecessary re-renders
+  const characterOptions = storedCharacters.map(character => ({
+    value: character.id,
+    label: character.name
+  }));
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium">Adegan</h3>
-        <Button onClick={appendNewScene} variant="outline">
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Tambah Adegan
-        </Button>
-      </div>
-
       {fields.map((field, index) => (
         <Card key={field.id} className="p-6">
           <div className="space-y-4">
-            <div className="flex justify-between items-start">
-              <h4 className="font-medium">Adegan {index + 1}</h4>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => remove(index)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
-            <FormField
-              control={form.control}
-              name={`scenes.${index}.title`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Judul Adegan</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Masukkan judul adegan" {...field} value={field.value ?? ""} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               control={form.control}
               name={`scenes.${index}.description`}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Deskripsi</FormLabel>
+                  <FormLabel>Deskripsi Adegan</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Masukkan deskripsi adegan"
-                      className="min-h-[100px]"
+                      placeholder="Deskripsikan adegan ini..."
+                      className="resize-none"
                       {...field}
-                      value={field.value ?? ""}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name={`scenes.${index}.cameraAngle`}
@@ -155,29 +130,101 @@ export function SceneForm() {
                 </FormItem>
               )}
             />
+
             {/* Karakter dalam adegan */}
-            <div className="space-y-2">
-              <span className="font-medium">Karakter dalam Adegan</span>
-              {sceneCharacterArrays[index].fields.map((charField, charIdx) => (
-                <div key={charField.id} className="flex gap-2 items-center">
-                  <Input
-                    placeholder="Nama Karakter"
-                    value={(charField as any).name ?? ""}
-                    onChange={e => sceneCharacterArrays[index].update(charIdx, { ...charField, name: e.target.value })}
-                  />
-                  <Input
-                    placeholder="Peran/Role"
-                    value={(charField as any).role ?? ""}
-                    onChange={e => sceneCharacterArrays[index].update(charIdx, { ...charField, role: e.target.value })}
-                  />
-                  <Button type="button" size="icon" variant="ghost" onClick={() => sceneCharacterArrays[index].remove(charIdx)}>
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold">Karakter dalam Adegan</h3>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const newCharacter: SceneCharacter = {
+                      id: crypto.randomUUID(),
+                      characterId: "",
+                      expression: "",
+                      action: "",
+                      interaction: "",
+                      interactionTarget: "",
+                      interactionBodyPart: "",
+                      dialog: "",
+                      speechBubbleType: "",
+                    };
+                    const currentCharacters = form.getValues(`scenes.${index}.characters`) || [];
+                    form.setValue(`scenes.${index}.characters`, [...currentCharacters, newCharacter]);
+                  }}
+                >
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  Tambah Karakter
+                </Button>
+              </div>
+
+              {form.watch(`scenes.${index}.characters`)?.map((character, charIndex) => (
+                <Card key={character.id} className="p-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="font-medium">Karakter {charIndex + 1}</h4>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        const currentCharacters = form.getValues(`scenes.${index}.characters`);
+                        form.setValue(
+                          `scenes.${index}.characters`,
+                          currentCharacters.filter((_, i) => i !== charIndex)
+                        );
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name={`scenes.${index}.characters.${charIndex}.characterId`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Karakter</FormLabel>
+                          <Select
+                            value={field.value ?? ""}
+                            onValueChange={field.onChange}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Pilih karakter" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {characterOptions.map((option) => (
+                                <SelectItem key={option.value} value={option.value}>
+                                  {option.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name={`scenes.${index}.characters.${charIndex}.dialog`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Dialog</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Masukkan dialog..." {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </Card>
               ))}
-              <Button type="button" size="sm" variant="outline" onClick={() => appendCharacterToScene(index)}>
-                + Tambah Karakter
-              </Button>
             </div>
           </div>
         </Card>

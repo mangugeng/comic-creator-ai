@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Character } from "@/types/character";
+import type { Character } from "@/types/service";
 import { CharacterService } from "@/services/character-service";
 import { toast } from "sonner";
 import { Trash2, Edit } from "lucide-react";
@@ -86,7 +86,6 @@ export function CharacterSelector({ onSelect }: CharacterSelectorProps) {
       name: character.name,
       physical: character.physical,
       clothing: character.clothing || "",
-      isBackground: character.isBackground || false,
     });
     setIsEditDialogOpen(true);
   };
@@ -159,11 +158,6 @@ export function CharacterSelector({ onSelect }: CharacterSelectorProps) {
               {character.clothing && (
                 <p className="text-sm text-muted-foreground">{character.clothing}</p>
               )}
-              {character.isBackground && (
-                <span className="inline-block px-2 py-1 text-xs bg-muted rounded-full">
-                  Karakter Latar
-                </span>
-              )}
             </div>
           </Card>
         ))}
@@ -214,26 +208,6 @@ export function CharacterSelector({ onSelect }: CharacterSelectorProps) {
                       <Input placeholder="Jas panjang hitam, dasi merah" {...field} />
                     </FormControl>
                     <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="isBackground"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center space-x-2 space-y-0">
-                    <FormControl>
-                      <input
-                        type="checkbox"
-                        checked={field.value}
-                        onChange={field.onChange}
-                        className="h-4 w-4 rounded border-gray-300"
-                      />
-                    </FormControl>
-                    <FormLabel className="font-normal">
-                      Karakter Latar
-                    </FormLabel>
                   </FormItem>
                 )}
               />

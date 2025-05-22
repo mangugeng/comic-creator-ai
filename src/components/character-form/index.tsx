@@ -7,14 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Character } from "@/types/character";
+import type { Character } from "@/types/service";
 
 const formSchema = z.object({
   name: z.string().min(1, "Nama harus diisi"),
   physical: z.string().min(1, "Deskripsi fisik harus diisi"),
   clothing: z.string().optional(),
-  isBackground: z.boolean().default(false),
+  // isBackground: z.boolean().default(false),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -27,21 +26,21 @@ export interface CharacterFormProps {
 
 export function CharacterForm({ character, onSave, onCancel }: CharacterFormProps) {
   const form = useForm<FormValues>({
-    resolver: zodResolver<FormValues, any, FormValues>(formSchema as z.ZodType<FormValues>),
+    resolver: zodResolver(formSchema),
     defaultValues: {
       name: character?.name || "",
       physical: character?.physical || "",
       clothing: character?.clothing || "",
-      isBackground: character?.isBackground || false,
+      // isBackground: character?.isBackground || false,
     },
   });
 
   const onSubmit = (values: FormValues) => {
     onSave({
       name: values.name,
+      description: "",
       physical: values.physical,
       clothing: values.clothing,
-      isBackground: values.isBackground,
     });
   };
 
@@ -89,24 +88,6 @@ export function CharacterForm({ character, onSave, onCancel }: CharacterFormProp
                 <Input placeholder="Masukkan deskripsi pakaian" {...field} />
               </FormControl>
               <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="isBackground"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>Karakter Latar</FormLabel>
-              </div>
             </FormItem>
           )}
         />

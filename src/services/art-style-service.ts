@@ -1,16 +1,4 @@
-import { z } from "zod";
-
-const artStyleSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  description: z.string(),
-  characteristics: z.array(z.string()),
-  examples: z.array(z.string()),
-  createdAt: z.string(),
-  updatedAt: z.string()
-});
-
-type ArtStyle = z.infer<typeof artStyleSchema>;
+import type { ArtStyle } from '../types/service';
 
 const STORAGE_KEY = "comic_art_styles";
 
@@ -19,9 +7,8 @@ export class ArtStyleService {
     try {
       const data = localStorage.getItem(STORAGE_KEY);
       return data ? JSON.parse(data) : [];
-    } catch (error) {
-      console.error("Error getting art styles:", error);
-      return [];
+    } catch {
+      throw new Error("Failed to get art styles");
     }
   }
 
@@ -34,13 +21,11 @@ export class ArtStyleService {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
-      
       artStyles.push(newArtStyle);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(artStyles));
       return newArtStyle;
-    } catch (error) {
-      console.error("Error saving art style:", error);
-      throw error;
+    } catch {
+      throw new Error("Failed to save art style");
     }
   }
 
@@ -49,9 +34,8 @@ export class ArtStyleService {
       const artStyles = await this.getAllArtStyles();
       const filteredArtStyles = artStyles.filter(style => style.id !== id);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(filteredArtStyles));
-    } catch (error) {
-      console.error("Error deleting art style:", error);
-      throw error;
+    } catch {
+      throw new Error("Failed to delete art style");
     }
   }
 
@@ -68,9 +52,8 @@ export class ArtStyleService {
       artStyles[idx] = updated;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(artStyles));
       return updated;
-    } catch (error) {
-      console.error("Error updating art style:", error);
-      throw error;
+    } catch {
+      throw new Error("Failed to update art style");
     }
   }
 } 

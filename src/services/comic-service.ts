@@ -1,27 +1,4 @@
-import { z } from "zod";
-
-const comicSchema = z.object({
-  characters: z.array(z.object({
-    id: z.string(),
-    name: z.string(),
-    physical: z.string(),
-    clothing: z.string().optional(),
-    isBackground: z.boolean(),
-    createdAt: z.string(),
-    updatedAt: z.string()
-  })),
-  scenes: z.array(z.object({
-    id: z.string(),
-    title: z.string(),
-    description: z.string(),
-    characters: z.array(z.string()),
-    background: z.string(),
-    style: z.string(),
-    effects: z.array(z.string())
-  }))
-});
-
-type ComicData = z.infer<typeof comicSchema>;
+import type { ComicData } from '../types/service';
 
 export class ComicService {
   static async generatePrompt(data: ComicData): Promise<string> {

@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { PlusCircle, Trash2, Save } from "lucide-react";
+import { Trash2, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -14,6 +14,7 @@ import { useToast } from "@/components/ui/toast";
 import { EffectService } from "@/services/effect-service";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import type { Effect } from "@/types/service";
 
 const formSchema = z.object({
   name: z.string().min(1, "Nama harus diisi"),
@@ -29,7 +30,7 @@ const effectTypeOptions = [
 ];
 
 export function EffectLibrary() {
-  const [effects, setEffects] = useState<any[]>([]);
+  const [effects, setEffects] = useState<Effect[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const { showToast } = useToast();
 
@@ -42,13 +43,9 @@ export function EffectLibrary() {
     }
   });
 
-  useEffect(() => {
-    loadEffects();
-  }, []);
-
-  const loadEffects = async () => {
+  const loadEffects = useCallback(async () => {
     try {
-      const data = await EffectService.getAllEffects();
+      const data = await EffectService.getEffects();
       setEffects(data);
     } catch (error) {
       console.error("Error loading effects:", error);
@@ -58,12 +55,16 @@ export function EffectLibrary() {
         variant: "destructive",
       });
     }
-  };
+  }, [showToast]);
+
+  useEffect(() => {
+    loadEffects();
+  }, [loadEffects]);
 
   const onSubmit = async (data: FormValues) => {
     try {
       setIsSaving(true);
-      await EffectService.saveEffect(data);
+      await EffectService.addEffect(data);
       showToast({
         title: "Sukses",
         description: "Efek berhasil disimpan!",

@@ -1,65 +1,47 @@
-import { z } from "zod";
+import type { Effect } from '../types/service';
 
-const effectSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  type: z.enum(["visual", "sound"]),
-  description: z.string(),
-  createdAt: z.string(),
-  updatedAt: z.string()
-});
-
-type Effect = z.infer<typeof effectSchema>;
+const STORAGE_KEY = 'effects';
 
 export class EffectService {
-  private static STORAGE_KEY = "comic_effects";
-
-  static async getAllEffects(): Promise<Effect[]> {
-    try {
-      const data = localStorage.getItem(this.STORAGE_KEY);
-      return data ? JSON.parse(data) : [];
-    } catch (error) {
-      console.error("Error getting effects:", error);
-      throw new Error("Failed to get effects");
-    }
+  static getEffects(): Effect[] {
+    if (typeof window === 'undefined') return [];
+    const effects = localStorage.getItem(STORAGE_KEY);
+    return effects ? JSON.parse(effects) : [];
   }
 
-  static async saveEffect(effect: Omit<Effect, "id" | "createdAt" | "updatedAt">): Promise<Effect> {
-    try {
-      const effects = await this.getAllEffects();
-      const newEffect: Effect = {
-        ...effect,
-        id: crypto.randomUUID(),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      effects.push(newEffect);
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(effects));
-      return newEffect;
-    } catch (error) {
-      console.error("Error saving effect:", error);
-      throw new Error("Failed to save effect");
-    }
+  static addEffect(effect: Omit<Effect, 'id' | 'createdAt' | 'updatedAt'>): Effect {
+    const effects = this.getEffects();
+    const newEffect: Effect = {
+      ...effect,
+      id: crypto.randomUUID(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    effects.push(newEffect);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(effects));
+    return newEffect;
   }
 
-  static async deleteEffect(id: string): Promise<void> {
-    try {
-      const effects = await this.getAllEffects();
-      const filteredEffects = effects.filter(effect => effect.id !== id);
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(filteredEffects));
-    } catch (error) {
-      console.error("Error deleting effect:", error);
-      throw new Error("Failed to delete effect");
-    }
+  static updateEffect(id: string, effect: Partial<Effect>): Effect | null {
+    const effects = this.getEffects();
+    const index = effects.findIndex(e => e.id === id);
+    if (index === -1) return null;
+
+    const updatedEffect: Effect = {
+      ...effects[index],
+      ...effect,
+      updatedAt: new Date().toISOString()
+    };
+    effects[index] = updatedEffect;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(effects));
+    return updatedEffect;
   }
 
-  static async getEffectById(id: string): Promise<Effect | null> {
-    try {
-      const effects = await this.getAllEffects();
-      return effects.find(effect => effect.id === id) || null;
-    } catch (error) {
-      console.error("Error getting effect:", error);
-      throw new Error("Failed to get effect");
-    }
+  static deleteEffect(id: string): boolean {
+    const effects = this.getEffects();
+    const filteredEffects = effects.filter(e => e.id !== id);
+    if (filteredEffects.length === effects.length) return false;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(filteredEffects));
+    return true;
   }
 } 

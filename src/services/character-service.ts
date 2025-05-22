@@ -1,4 +1,4 @@
-import { Character } from "@/types/character";
+import type { Character } from "../types/service";
 
 const STORAGE_KEY = "comic_characters";
 

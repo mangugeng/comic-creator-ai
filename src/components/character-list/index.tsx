@@ -1,9 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useFormContext, useFieldArray } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { useState, useEffect, useCallback } from "react";
+import { useFormContext } from "react-hook-form";
 import { PlusCircle, Trash2, Info, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -20,33 +18,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
-const formSchema = z.object({
-  name: z.string().min(1, "Nama harus diisi"),
-  physical: z.string().min(1, "Deskripsi fisik harus diisi"),
-  clothing: z.string().optional(),
-  isBackground: z.boolean()
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import type { Character } from "@/types/service";
 
 export function CharacterList() {
-  const [storedCharacters, setStoredCharacters] = useState<any[]>([]);
+  const [storedCharacters, setStoredCharacters] = useState<Character[]>([]);
   const [isSaving, setIsSaving] = useState(false);
-  const [selectedCharacter, setSelectedCharacter] = useState<any>(null);
+  const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const { showToast } = useToast();
   const form = useFormContext();
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "characters"
-  });
 
-  useEffect(() => {
-    loadStoredCharacters();
-  }, []);
-
-  const loadStoredCharacters = async () => {
+  const loadStoredCharacters = useCallback(async () => {
     try {
       const characters = await CharacterService.getAllCharacters();
       setStoredCharacters(characters);
@@ -58,22 +40,21 @@ export function CharacterList() {
         variant: "destructive",
       });
     }
-  };
+  }, [showToast]);
+
+  useEffect(() => {
+    loadStoredCharacters();
+  }, [loadStoredCharacters]);
 
   const appendNewCharacter = () => {
     setShowAddForm(true);
     form.reset();
   };
 
-  const saveCharacter = async (data: FormValues) => {
+  const saveCharacter = async (data: Character) => {
     try {
       setIsSaving(true);
-      await CharacterService.saveCharacter({
-        ...data,
-        id: crypto.randomUUID(),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      });
+      await CharacterService.saveCharacter(data);
       showToast({
         title: "Sukses",
         description: "Karakter berhasil disimpan!",
@@ -93,7 +74,7 @@ export function CharacterList() {
     }
   };
 
-  const updateCharacter = async (id: string, data: FormValues) => {
+  const updateCharacter = async (id: string, data: Character) => {
     try {
       setIsSaving(true);
       await CharacterService.updateCharacter(id, {
@@ -226,10 +207,13 @@ export function CharacterList() {
                 onClick={async () => {
                   const values = form.getValues();
                   const data = {
+                    id: crypto.randomUUID(),
                     name: values.name,
+                    description: "",
                     physical: values.physical,
                     clothing: values.clothing,
-                    isBackground: values.isBackground,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
                   };
                   await saveCharacter(data);
                 }}
@@ -269,12 +253,6 @@ export function CharacterList() {
                             <p className="text-sm text-muted-foreground">{character.clothing}</p>
                           </div>
                         )}
-                        <div>
-                          <h4 className="font-medium mb-2">Status</h4>
-                          <p className="text-sm text-muted-foreground">
-                            {character.isBackground ? "Karakter Background" : "Karakter Utama"}
-                          </p>
-                        </div>
                       </div>
                     </DialogContent>
                   </Dialog>
@@ -354,24 +332,6 @@ export function CharacterList() {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="isBackground"
-                defaultValue={selectedCharacter.isBackground}
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>Karakter Background</FormLabel>
-                    </div>
-                  </FormItem>
-                )}
-              />
               <div className="flex justify-end gap-2">
                 <Button
                   type="button"
@@ -386,10 +346,13 @@ export function CharacterList() {
                   onClick={async () => {
                     const values = form.getValues();
                     const data = {
+                      id: selectedCharacter.id,
                       name: values.name,
+                      description: "",
                       physical: values.physical,
                       clothing: values.clothing,
-                      isBackground: values.isBackground,
+                      createdAt: selectedCharacter.createdAt,
+                      updatedAt: new Date().toISOString(),
                     };
                     await updateCharacter(selectedCharacter.id, data);
                   }}

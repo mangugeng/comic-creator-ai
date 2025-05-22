@@ -1,16 +1,4 @@
-import { z } from "zod";
-
-const dialogSchema = z.object({
-  id: z.string(),
-  characterId: z.string(),
-  text: z.string(),
-  bubbleType: z.enum(["speech", "thought", "whisper", "shout"]),
-  emotion: z.string(),
-  createdAt: z.string(),
-  updatedAt: z.string()
-});
-
-type Dialog = z.infer<typeof dialogSchema>;
+import type { Dialog } from '../types/service';
 
 const STORAGE_KEY = "comic_dialogs";
 
@@ -19,9 +7,8 @@ export class DialogService {
     try {
       const data = localStorage.getItem(STORAGE_KEY);
       return data ? JSON.parse(data) : [];
-    } catch (error) {
-      console.error("Error getting dialogs:", error);
-      return [];
+    } catch {
+      throw new Error("Failed to get dialogs from storage");
     }
   }
 
@@ -29,9 +16,8 @@ export class DialogService {
     try {
       const dialogs = await this.getAllDialogs();
       return dialogs.filter(dialog => dialog.characterId === characterId);
-    } catch (error) {
-      console.error("Error getting character dialogs:", error);
-      return [];
+    } catch {
+      throw new Error("Failed to get dialogs by character");
     }
   }
 
@@ -44,13 +30,11 @@ export class DialogService {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
-      
       dialogs.push(newDialog);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(dialogs));
       return newDialog;
-    } catch (error) {
-      console.error("Error saving dialog:", error);
-      throw error;
+    } catch {
+      throw new Error("Failed to save dialog");
     }
   }
 
@@ -59,9 +43,8 @@ export class DialogService {
       const dialogs = await this.getAllDialogs();
       const filteredDialogs = dialogs.filter(dialog => dialog.id !== id);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(filteredDialogs));
-    } catch (error) {
-      console.error("Error deleting dialog:", error);
-      throw error;
+    } catch {
+      throw new Error("Failed to delete dialog");
     }
   }
 } 

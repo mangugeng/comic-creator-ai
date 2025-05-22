@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { PlusCircle, Trash2, Info, Pencil } from "lucide-react";
+import { PlusCircle, Trash2, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -16,8 +16,7 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  DialogTitle
 } from "@/components/ui/dialog";
 
 const formSchema = z.object({
@@ -51,11 +50,7 @@ export function BackgroundLibrary() {
     }
   });
 
-  useEffect(() => {
-    loadBackgrounds();
-  }, []);
-
-  const loadBackgrounds = async () => {
+  const loadBackgrounds = useCallback(async () => {
     try {
       const data = await BackgroundService.getAllBackgrounds();
       setBackgrounds(data);
@@ -67,7 +62,11 @@ export function BackgroundLibrary() {
         variant: "destructive",
       });
     }
-  };
+  }, [showToast]);
+
+  useEffect(() => {
+    loadBackgrounds();
+  }, [loadBackgrounds]);
 
   const onAddClick = () => {
     setShowAddForm(true);
@@ -112,8 +111,7 @@ export function BackgroundLibrary() {
       setIsSaving(true);
       await BackgroundService.updateBackground(selectedBackground.id, {
         name: data.name,
-        description: data.description,
-        updatedAt: new Date().toISOString()
+        description: data.description
       });
       showToast({
         title: "Sukses",
@@ -223,24 +221,6 @@ export function BackgroundLibrary() {
             <div className="flex justify-between items-center">
               <span className="font-medium">{background.name}</span>
               <div className="flex gap-2">
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="ghost" size="sm">
-                      <Info className="h-4 w-4" />
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>{background.name}</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4">
-                      <div>
-                        <h4 className="font-medium mb-2">Deskripsi</h4>
-                        <p className="text-sm text-muted-foreground">{background.description}</p>
-                      </div>
-                    </div>
-                  </DialogContent>
-                </Dialog>
                 <Button
                   variant="ghost"
                   size="sm"
